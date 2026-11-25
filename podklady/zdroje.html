@@ -6,218 +6,109 @@
 <link rel="stylesheet" href="styl.css">
 </head>
 <body>
-<section class="titul" style="height:auto;display:block;padding-top:14mm">
-  <div class="titul-pruh"></div>
-  <p class="nadtitul">Příloha k návodu „AI agenti – napojení na GitHub“</p>
-  <h1 style="font-size:24pt">Zdroje</h1>
-  <p>U každého zdroje je uvedena adresa, datum přístupu, k čemu byl v návodu použit, a <b>doslovné citace</b> pasáží, ze kterých návod vychází (v původním znění, anglicky). Čísla odpovídají odkazům [n] v návodu.</p>
-  <div class="pozn"><b>Jak byly zdroje získány (25. 11. 2026):</b><br>
-  • <b>Claude Code Docs</b> [1]–[3]: načteny přímo z webu code.claude.com (stránky i jejich Markdown verze <code>…/stranka.md</code>), screenshoty označené <span class="tag tag-c">C</span> pořídil automatizovaný prohlížeč.<br>
-  • <b>GitHub Docs</b> [4]–[13], [18]: texty i oficiální screenshoty <span class="tag tag-b">B</span> pochází ze zdrojového repozitáře webu docs.github.com, tj. <code>github.com/github/docs</code>, commit <code>bd60abd2de5c9285e34ce3ea794274e973b0633e</code> (24. 11. 2026). Uvedena je veřejná adresa stránky na docs.github.com i odkaz na zdrojový soubor. V citacích jsou proměnné šablon (např. <code>{% data variables.product.prodname_copilot_short %}</code>) nahrazeny jejich hodnotou (Copilot, GitHub…).<br>
-  • <b>Gemini CLI GitHub Action</b> [14]–[16]: oficiální repozitář <code>github.com/google-github-actions/run-gemini-cli</code>, commit <code>c8bfcfc10cf7ec12752cbb35395598f2f2eb920a</code> (19. 11. 2026).<br>
-  • <b>Vlastní ověření</b> [19]: skutečný výstup z cloudové relace Claude Code v ukázkovém repozitáři, screenshoty <span class="tag tag-a">A</span>.</div>
-</section>
 
-<h2 style="margin-top:14pt">A. Claude Code (Anthropic)</h2>
+<h1 style="font-size:18pt;margin:0 0 4pt">Zdroje</h1>
+<p>Příloha k návodu „AI agenti – napojení na GitHub“. Zdroje jsou citovány podle ČSN ISO 690. U každého zdroje je uvedeno, k čemu byl použit, a citace pasáží, ze kterých návod vychází (v původním znění).</p>
 
-<div class="zdroj">
-  <h3>[1] Get started with Claude Code in the cloud</h3>
-  <div class="meta">Anthropic · Claude Code Docs · přístup 25. 11. 2026</div>
-  <div class="url">https://code.claude.com/docs/en/web-quickstart</div>
-  <div class="pouzito"><b>Použito pro:</b> předpoklady (plány), kroky „Connect GitHub“ (claude.ai/code, Sign in with GitHub, Claude GitHub App), Default environment, „Start a task“ (repozitář, větev, režimy oprávnění), <code>/web-setup</code>, odebrání přístupu. Screenshoty 01, 03.</div>
-  <blockquote>„Cloud sessions are available on Pro, Max, Ultra, and Team plans, and for Enterprise users with premium seats or Chat + Claude Code seats.“</blockquote>
+<p class="poznamka">Dokumentace GitHub Docs byla čtena ze zdrojového repozitáře webu docs.github.com (github.com/github/docs, commit bd60abd, 24. 11. 2026), odkud pochází i převzaté screenshoty rozhraní GitHubu. V citacích jsou proměnné šablon nahrazeny jejich hodnotou (např. „Copilot“). Dokumentace akce run-gemini-cli byla čtena z repozitáře google-github-actions/run-gemini-cli, commit c8bfcfc (19. 11. 2026).</p>
+
+<h3 class="bez" style="margin-top:14pt">Claude Code</h3>
+<ol class="zdroje">
+<li><span class="c">[1]</span> ANTHROPIC. <i>Get started with Claude Code in the cloud</i> [online]. Claude Code Docs. [cit. 2026-11-25]. Dostupné z: <span class="url">https://code.claude.com/docs/en/web-quickstart</span>
+  <span class="uziti">Použito: předpoklady, propojení s GitHubem, Claude GitHub App, prostředí Default, zadání úkolu, /web-setup, odebrání přístupu; obrázky 1 a 4.</span>
   <blockquote>„Claude clones the GitHub repository you select into an isolated virtual machine, makes changes, and pushes a branch for you to review.“</blockquote>
-  <blockquote>„With this connection, a session can clone any public repository, but can work in a private repository only when the Claude GitHub App is installed on it. Install the Claude GitHub App on each GitHub account or organization whose private repositories you want to use. On a GitHub organization, an organization owner may need to approve the installation.“</blockquote>
-  <blockquote>„Accept edits: Claude makes changes and pushes a branch without stopping for approval · Plan: Claude proposes an approach and waits for you to approve it before editing files“</blockquote>
+  <blockquote>„With this connection, a session can clone any public repository, but can work in a private repository only when the Claude GitHub App is installed on it.“</blockquote>
+  <blockquote>„Cloud sessions are available on Pro, Max, Ultra, and Team plans, and for Enterprise users with premium seats or Chat + Claude Code seats.“</blockquote>
   <blockquote>„To remove the token from your Claude account, disconnect GitHub at claude.ai/customize/connectors.“</blockquote>
-</div>
-
-<div class="zdroj">
-  <h3>[2] Use Claude Code in the cloud</h3>
-  <div class="meta">Anthropic · Claude Code Docs · přístup 25. 11. 2026</div>
-  <div class="url">https://code.claude.com/docs/en/claude-code-on-the-web</div>
-  <div class="pouzito"><b>Použito pro:</b> dva způsoby autorizace (GitHub App vs. <code>/web-setup</code>), spuštění relace z terminálu <code>claude --cloud</code>. Screenshot 02.</div>
-  <blockquote>„Cloud sessions need access to your GitHub repositories to clone code and push branches. You can grant access in two ways: […] GitHub App — Authorize the Claude GitHub App during web onboarding […] /web-setup — Run /web-setup in your terminal to send your local gh CLI token to your Claude account“</blockquote>
+</li>
+<li><span class="c">[2]</span> ANTHROPIC. <i>Use Claude Code in the cloud</i> [online]. Claude Code Docs. [cit. 2026-11-25]. Dostupné z: <span class="url">https://code.claude.com/docs/en/claude-code-on-the-web</span>
+  <span class="uziti">Použito: způsoby autorizace (GitHub App, /web-setup), spuštění z terminálu; obrázek 3.</span>
+  <blockquote>„Cloud sessions need access to your GitHub repositories to clone code and push branches. You can grant access in two ways […]“</blockquote>
   <blockquote>„In Anthropic-hosted environments, your GitHub credentials stay encrypted on Anthropic's servers and never enter a session's VM.“</blockquote>
-</div>
-
-<div class="zdroj">
-  <h3>[3] Configure cloud environments</h3>
-  <div class="meta">Anthropic · Claude Code Docs · přístup 25. 11. 2026</div>
-  <div class="url">https://code.claude.com/docs/en/cloud-environments</div>
-  <div class="pouzito"><b>Použito pro:</b> nastavení prostředí (síť, proměnné, setup script), GitHub proxy a její omezení, doporučení chránit větve.</div>
-  <blockquote>„Git credentials: the git client inside the VM uses a scoped credential, which the proxy verifies and swaps for your actual GitHub token.“</blockquote>
+</li>
+<li><span class="c">[3]</span> ANTHROPIC. <i>Configure cloud environments</i> [online]. Claude Code Docs. [cit. 2026-11-25]. Dostupné z: <span class="url">https://code.claude.com/docs/en/cloud-environments</span>
+  <span class="uziti">Použito: nastavení prostředí, GitHub proxy, doporučení chránit větve.</span>
   <blockquote>„Push restrictions: the proxy rejects branch deletions and pushes of anything other than a branch, such as a tag. It doesn't limit which branches a push can update. To do that, use branch protection rules or rulesets on GitHub.“</blockquote>
   <blockquote>„Repository scope: the proxy serves GitHub API requests for the repositories attached to the session.“</blockquote>
-</div>
+</li>
+</ol>
 
-<h2 style="margin-top:14pt">B. GitHub Copilot cloud agent a GitHub (GitHub Docs)</h2>
-
-<div class="zdroj">
-  <h3>[4] Using Copilot in the cloud on GitHub</h3>
-  <div class="meta">GitHub Docs · přístup 25. 11. 2026</div>
-  <div class="url">https://docs.github.com/en/copilot/how-tos/use-copilot-agents/cloud-agent/use-cloud-agent-on-github</div>
-  <div class="url">zdroj: github.com/github/docs/blob/bd60abd…/content/copilot/how-tos/use-copilot-agents/cloud-agent/use-cloud-agent-on-github.md</div>
-  <div class="pouzito"><b>Použito pro:</b> zadání úkolu přiřazením issue, karta Agents, dashboard, <code>/task</code>, iterace přes komentáře. Screenshoty 09, 10, 11, 12.</div>
+<h3 class="bez">GitHub Copilot a GitHub</h3>
+<ol class="zdroje">
+<li><span class="c">[4]</span> GITHUB. <i>Using Copilot in the cloud on GitHub</i> [online]. GitHub Docs. [cit. 2026-11-25]. Dostupné z: <span class="url">https://docs.github.com/en/copilot/how-tos/use-copilot-agents/cloud-agent/use-cloud-agent-on-github</span>
+  <span class="uziti">Použito: zadání úkolu přes issue, kartu Agents a /task, další úpravy přes komentáře; obrázky 7–10.</span>
   <blockquote>„In the right side menu, click Assignees. […] Click Copilot from assignees list.“</blockquote>
   <blockquote>„At the start of the session, the cloud sandbox takes a copy of the repository and gives Copilot permission, within existing constraints, to work with its content.“</blockquote>
-  <blockquote>„When Copilot starts a new session in response to your comment, an eyes emoji (👀) reaction appears on the comment. A "Copilot has started work" event appears in the pull request timeline.“</blockquote>
-</div>
-
-<div class="zdroj">
-  <h3>[5] Managing GitHub Copilot policies as an individual subscriber</h3>
-  <div class="meta">GitHub Docs · přístup 25. 11. 2026</div>
-  <div class="url">https://docs.github.com/en/copilot/how-tos/manage-your-account/manage-policies</div>
-  <div class="pouzito"><b>Použito pro:</b> povolení agenta jen pro vybrané repozitáře, předpoklad placeného plánu, agenti třetích stran.</div>
+</li>
+<li><span class="c">[5]</span> GITHUB. <i>Managing GitHub Copilot policies as an individual subscriber</i> [online]. GitHub Docs. [cit. 2026-11-25]. Dostupné z: <span class="url">https://docs.github.com/en/copilot/how-tos/manage-your-account/manage-policies</span>
+  <span class="uziti">Použito: povolení agenta pro vybrané repozitáře, předpoklad placeného plánu, agenti třetích stran.</span>
   <blockquote>„Copilot cloud agent is enabled in all repositories by default, but you can block it from being used in repositories owned by your own personal account by changing your account settings.“</blockquote>
-  <blockquote>„In the sidebar, under Copilot, click Cloud agent. On the Copilot cloud agent page, under "Policies," click the dropdown button for "Repository access," then choose either No repositories, All repositories, or Only selected repositories.“</blockquote>
-  <blockquote>„Copilot cloud agent is available for all paid Copilot plans.“ (vložený text <code>data/reusables/gated-features/copilot-cloud-agent.md</code>)</blockquote>
-  <blockquote>„Coding agents have access to the same repositories that Copilot cloud agent has been enabled in.“</blockquote>
-</div>
-
-<div class="zdroj">
-  <h3>[6] Risks and mitigations for GitHub Copilot cloud agent</h3>
-  <div class="meta">GitHub Docs · přístup 25. 11. 2026</div>
-  <div class="url">https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/risks-and-mitigations</div>
-  <div class="pouzito"><b>Použito pro:</b> omezení větví, do kterých agent zapisuje.</div>
-  <blockquote>„Copilot cloud agent only has the ability to push to a single branch. When the agent is triggered by mentioning @copilot on an existing pull request, Copilot has write access to the pull request's branch. In other cases, a new copilot/ branch is created for Copilot, and the agent can only push to that branch. The agent is also subject to any branch protections and required checks for the working repository.“</blockquote>
-</div>
-
-<div class="zdroj">
-  <h3>[7] Application card: GitHub Copilot Agents</h3>
-  <div class="meta">GitHub Docs · přístup 25. 11. 2026</div>
-  <div class="url">https://docs.github.com/en/copilot/responsible-use/agents</div>
-  <div class="pouzito"><b>Použito pro:</b> přístup agenta k secrets.</div>
+  <blockquote>„On the Copilot cloud agent page, under "Policies," click the dropdown button for "Repository access," then choose either No repositories, All repositories, or Only selected repositories.“</blockquote>
+  <blockquote>„Copilot cloud agent is available for all paid Copilot plans.“</blockquote>
+</li>
+<li><span class="c">[6]</span> GITHUB. <i>Risks and mitigations for GitHub Copilot cloud agent</i> [online]. GitHub Docs. [cit. 2026-11-25]. Dostupné z: <span class="url">https://docs.github.com/en/copilot/concepts/security-governance-and-network-settings/risks-and-mitigations</span>
+  <span class="uziti">Použito: omezení větví, do kterých agent zapisuje.</span>
+  <blockquote>„In other cases, a new copilot/ branch is created for Copilot, and the agent can only push to that branch. The agent is also subject to any branch protections and required checks for the working repository.“</blockquote>
+</li>
+<li><span class="c">[7]</span> GITHUB. <i>Application card: GitHub Copilot Agents</i> [online]. GitHub Docs. [cit. 2026-11-25]. Dostupné z: <span class="url">https://docs.github.com/en/copilot/responsible-use/agents</span>
+  <span class="uziti">Použito: přístup agenta k secrets.</span>
   <blockquote>„The agent does not have access to Actions organization or repository secrets—only secrets and variables specifically added to the copilot environment are passed to the agent.“</blockquote>
-</div>
-
-<div class="zdroj">
-  <h3>[8] Configuring settings for GitHub Copilot in the cloud</h3>
-  <div class="meta">GitHub Docs · přístup 25. 11. 2026</div>
-  <div class="url">https://docs.github.com/en/copilot/how-tos/use-copilot-agents/cloud-agent/configuring-agent-settings</div>
-  <div class="pouzito"><b>Použito pro:</b> schvalování běhu GitHub Actions. Screenshot 13 (z vloženého textu <code>data/reusables/copilot/cloud-agent-workflow-run-approval-default.md</code>).</div>
+</li>
+<li><span class="c">[8]</span> GITHUB. <i>Configuring settings for GitHub Copilot in the cloud</i> [online]. GitHub Docs. [cit. 2026-11-25]. Dostupné z: <span class="url">https://docs.github.com/en/copilot/how-tos/use-copilot-agents/cloud-agent/configuring-agent-settings</span>
+  <span class="uziti">Použito: schvalování běhu workflow; obrázek 11.</span>
   <blockquote>„By default, GitHub Actions workflows will not run automatically when Copilot pushes changes to a pull request.“</blockquote>
-  <blockquote>„Allowing GitHub Actions workflows to run without approval may allow unreviewed code written by Copilot to gain write access to your repository or access your GitHub Actions secrets.“</blockquote>
-</div>
-
-<div class="zdroj">
-  <h3>[9] Installing a GitHub App from a third party</h3>
-  <div class="meta">GitHub Docs · přístup 25. 11. 2026</div>
-  <div class="url">https://docs.github.com/en/apps/using-github-apps/installing-a-github-app-from-a-third-party</div>
-  <div class="pouzito"><b>Použito pro:</b> obecný postup instalace GitHub App s omezením na vybrané repozitáře (Claude GitHub App, vlastní aplikace pro Gemini).</div>
+</li>
+<li><span class="c">[9]</span> GITHUB. <i>Installing a GitHub App from a third party</i> [online]. GitHub Docs. [cit. 2026-11-25]. Dostupné z: <span class="url">https://docs.github.com/en/apps/using-github-apps/installing-a-github-app-from-a-third-party</span>
+  <span class="uziti">Použito: instalace GitHub App s omezením na vybrané repozitáře; obrázek 2.</span>
   <blockquote>„If the app requires repository permissions, select All repositories or Only select repositories. The app will always have at least read-only access to all public repositories on GitHub.“</blockquote>
-  <blockquote>„If you selected Only select repositories in the previous step, under the Select repositories dropdown, select the repositories that you want the app to access.“</blockquote>
-</div>
-
-<div class="zdroj">
-  <h3>[10] Using secrets in GitHub Actions</h3>
-  <div class="meta">GitHub Docs · přístup 25. 11. 2026</div>
-  <div class="url">https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets</div>
-  <div class="pouzito"><b>Použito pro:</b> uložení <code>GEMINI_API_KEY</code> a <code>APP_PRIVATE_KEY</code>. Screenshoty 15, 16.</div>
+</li>
+<li><span class="c">[10]</span> GITHUB. <i>Using secrets in GitHub Actions</i> [online]. GitHub Docs. [cit. 2026-11-25]. Dostupné z: <span class="url">https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets</span>
+  <span class="uziti">Použito: uložení API klíče a privátního klíče; obrázky 13 a 14.</span>
   <blockquote>„Click New repository secret. In the Name field, type a name for your secret. In the Secret field, enter the value for your secret. Click Add secret.“</blockquote>
-</div>
+</li>
+<li><span class="c">[11]</span> GITHUB. <i>Store information in variables</i> [online]. GitHub Docs. [cit. 2026-11-25]. Dostupné z: <span class="url">https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-variables</span>
+  <span class="uziti">Použito: proměnná APP_ID; obrázek 16.</span>
+</li>
+<li><span class="c">[12]</span> GITHUB. <i>Reviewing and revoking authorization of GitHub Apps</i> [online]. GitHub Docs. [cit. 2026-11-25]. Dostupné z: <span class="url">https://docs.github.com/en/apps/using-github-apps/reviewing-and-revoking-authorization-of-github-apps</span>
+  <span class="uziti">Použito: zrušení přístupu aplikace; obrázek 6.</span>
+</li>
+<li><span class="c">[13]</span> GITHUB. <i>Customizing or disabling the firewall for GitHub Copilot</i> [online]. GitHub Docs. [cit. 2026-11-25]. Dostupné z: <span class="url">https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-the-firewall</span>
+  <span class="uziti">Použito: firewall agenta; obrázek 12.</span>
+</li>
+</ol>
 
-<div class="zdroj">
-  <h3>[11] Store information in variables</h3>
-  <div class="meta">GitHub Docs · přístup 25. 11. 2026</div>
-  <div class="url">https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-variables</div>
-  <div class="pouzito"><b>Použito pro:</b> uložení proměnné <code>APP_ID</code>. Screenshot 17.</div>
-</div>
-
-<div class="zdroj">
-  <h3>[12] Reviewing and revoking authorization of GitHub Apps</h3>
-  <div class="meta">GitHub Docs · přístup 25. 11. 2026</div>
-  <div class="url">https://docs.github.com/en/apps/using-github-apps/reviewing-and-revoking-authorization-of-github-apps</div>
-  <div class="pouzito"><b>Použito pro:</b> zrušení přístupu aplikace k účtu. Screenshot 08.</div>
-</div>
-
-<div class="zdroj">
-  <h3>[13] Customizing or disabling the firewall for GitHub Copilot</h3>
-  <div class="meta">GitHub Docs · přístup 25. 11. 2026</div>
-  <div class="url">https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-the-firewall</div>
-  <div class="pouzito"><b>Použito pro:</b> omezení síťového přístupu agenta. Screenshot 14.</div>
-</div>
-
-<div class="zdroj">
-  <h3>[18] Managing private keys for GitHub Apps</h3>
-  <div class="meta">GitHub Docs · přístup 25. 11. 2026</div>
-  <div class="url">https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/managing-private-keys-for-github-apps</div>
-  <div class="pouzito"><b>Použito pro:</b> screenshot 18 (soukromý klíč GitHub App).</div>
-</div>
-
-<h2 style="margin-top:14pt">C. Gemini CLI GitHub Action (Google)</h2>
-
-<div class="zdroj">
-  <h3>[14] run-gemini-cli – README</h3>
-  <div class="meta">Google · repozitář google-github-actions/run-gemini-cli · commit c8bfcfc · přístup 25. 11. 2026</div>
-  <div class="url">https://github.com/google-github-actions/run-gemini-cli/blob/main/README.md</div>
-  <div class="pouzito"><b>Použito pro:</b> Quick Start (API klíč, secret, .gitignore, <code>/setup-github</code>, kopírování workflow), použití <code>@gemini-cli</code>.</div>
-  <blockquote>„Store your API key as a secret named GEMINI_API_KEY in your repository: Go to your repository's Settings &gt; Secrets and variables &gt; Actions · Click New repository secret · Name: GEMINI_API_KEY, Value: your API key“</blockquote>
-  <blockquote>„In Gemini CLI in your terminal, type: /setup-github“</blockquote>
+<h3 class="bez">Gemini CLI</h3>
+<ol class="zdroje">
+<li><span class="c">[14]</span> GOOGLE. <i>run-gemini-cli: README</i> [online]. GitHub, google-github-actions/run-gemini-cli. [cit. 2026-11-25]. Dostupné z: <span class="url">https://github.com/google-github-actions/run-gemini-cli/blob/main/README.md</span>
+  <span class="uziti">Použito: API klíč jako secret, .gitignore, /setup-github, použití @gemini-cli.</span>
+  <blockquote>„Store your API key as a secret named GEMINI_API_KEY in your repository“</blockquote>
   <blockquote>„In any issue or pull request, mention @gemini-cli followed by your request“</blockquote>
-</div>
-
-<div class="zdroj">
-  <h3>[15] run-gemini-cli – Authentication</h3>
-  <div class="meta">Google · repozitář google-github-actions/run-gemini-cli · commit c8bfcfc · přístup 25. 11. 2026</div>
-  <div class="url">https://github.com/google-github-actions/run-gemini-cli/blob/main/docs/authentication.md</div>
-  <div class="pouzito"><b>Použito pro:</b> API klíč z Google AI Studio, varianty <code>GITHUB_TOKEN</code> / vlastní GitHub App, oprávnění aplikace, APP_ID a APP_PRIVATE_KEY.</div>
+</li>
+<li><span class="c">[15]</span> GOOGLE. <i>run-gemini-cli: Authentication</i> [online]. GitHub, google-github-actions/run-gemini-cli. [cit. 2026-11-25]. Dostupné z: <span class="url">https://github.com/google-github-actions/run-gemini-cli/blob/main/docs/authentication.md</span>
+  <span class="uziti">Použito: GITHUB_TOKEN, vlastní GitHub App, oprávnění, APP_ID a APP_PRIVATE_KEY.</span>
   <blockquote>„Job-Scoped: The token's access is limited to the repository where the workflow is running and expires when the job is complete.“</blockquote>
-  <blockquote>„For optimal security and control, we strongly recommend creating a custom GitHub App. This method allows you to grant the action fine-grained permissions, limiting its access to only what is necessary.“</blockquote>
-  <blockquote>„Contents: Read &amp; write · Issues: Read &amp; write · Pull requests: Read &amp; write“</blockquote>
+  <blockquote>„For optimal security and control, we strongly recommend creating a custom GitHub App.“</blockquote>
   <blockquote>„Select Only select repositories and choose the repository (or repositories) where you intend to use the action.“</blockquote>
-</div>
-
-<div class="zdroj">
-  <h3>[16] run-gemini-cli – Gemini CLI Assistant (+ ukázková workflow)</h3>
-  <div class="meta">Google · repozitář google-github-actions/run-gemini-cli · commit c8bfcfc · přístup 25. 11. 2026</div>
-  <div class="url">https://github.com/google-github-actions/run-gemini-cli/blob/main/examples/workflows/gemini-assistant/README.md</div>
-  <div class="url">…/examples/workflows/gemini-assistant/gemini-invoke.yml · …/gemini-plan-execute.yml · …/examples/workflows/gemini-dispatch/gemini-dispatch.yml</div>
-  <div class="pouzito"><b>Použito pro:</b> výběr workflow, schvalování plánu, vytvoření větve a PR, oprávnění v blocích <code>permissions</code>. Screenshot 19.</div>
-  <blockquote>„Code Modification: After maintainer approval of a proposed plan comment, Gemini CLI can create a feature branch, commit file updates, and open a pull request for review.“</blockquote>
-  <blockquote>„Copy the link or comment ID of that plan comment and reply with @gemini-cli /approve &lt;comment-url-or-id&gt;. Bare @gemini-cli /approve without a comment link or ID is rejected so only the exact bot-authored plan you reviewed can run.“</blockquote>
+</li>
+<li><span class="c">[16]</span> GOOGLE. <i>run-gemini-cli: Gemini CLI Assistant</i> [online]. GitHub, google-github-actions/run-gemini-cli. [cit. 2026-11-25]. Dostupné z: <span class="url">https://github.com/google-github-actions/run-gemini-cli/blob/main/examples/workflows/gemini-assistant/README.md</span>
+  <span class="uziti">Použito: výběr workflow, schválení plánu, větev a pull request; soubory gemini-plan-execute.yml a gemini-dispatch.yml na obrázku 17.</span>
+  <blockquote>„Copy the link or comment ID of that plan comment and reply with @gemini-cli /approve &lt;comment-url-or-id&gt;. Bare @gemini-cli /approve without a comment link or ID is rejected […]“</blockquote>
   <blockquote>„When the verified plan modifies files, Gemini CLI creates a feature branch, commits the file updates, and opens a pull request for review. We recommend enabling branch protection rules on your default branch (main).“</blockquote>
-</div>
+</li>
+</ol>
 
-<h2>D. Obrázky a vlastní ověření</h2>
+<h3 class="bez">Ostatní</h3>
+<ol class="zdroje">
+<li><span class="c">[17]</span> GITHUB. <i>github/docs</i> [online]. Zdrojový repozitář dokumentace GitHub Docs, adresář assets/images. [cit. 2026-11-25]. Dostupné z: <span class="url">https://github.com/github/docs/tree/main/assets/images</span>
+  <span class="uziti">Použito: soubory převzatých screenshotů rozhraní GitHubu (obrázky 2, 6–16).</span>
+</li>
+<li><span class="c">[18]</span> GITHUB. <i>Managing private keys for GitHub Apps</i> [online]. GitHub Docs. [cit. 2026-11-25]. Dostupné z: <span class="url">https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/managing-private-keys-for-github-apps</span>
+  <span class="uziti">Použito: obrázek 15.</span>
+</li>
+<li><span class="c">[19]</span> Ukázkový repozitář <i>Zorvoan/agenti_napojeni-na-git</i>, větev claude/ai-agents-github-setup-n7ew21 [online]. [cit. 2026-11-25]. Dostupné z: <span class="url">https://github.com/Zorvoan/agenti_napojeni-na-git/tree/claude/ai-agents-github-setup-n7ew21</span>
+  <span class="uziti">Snímek terminálu na obrázku 5 zachycuje commit a081372 a jeho push do této větve.</span>
+</li>
+</ol>
 
-<div class="zdroj">
-  <h3>[17] Repozitář github/docs – oficiální obrázky GitHub Docs</h3>
-  <div class="meta">GitHub · commit bd60abd2de5c9285e34ce3ea794274e973b0633e · přístup 25. 11. 2026</div>
-  <div class="url">https://github.com/github/docs/tree/bd60abd2de5c9285e34ce3ea794274e973b0633e/assets/images</div>
-  <div class="pouzito"><b>Použito pro:</b> zdrojové soubory screenshotů <span class="tag tag-b">B</span> (viz tabulka níže). Obrázek 07 (<code>github-apps/install-app.png</code>) je oficiální obrázek z tohoto repozitáře; v aktuálním textu dokumentace na něj žádná stránka neodkazuje, krok, který ukazuje, je popsán ve zdroji [9].</div>
-</div>
-
-<div class="zdroj">
-  <h3>[19] Vlastní ověření – ukázkový repozitář</h3>
-  <div class="meta">Výstup cloudové relace Claude Code, 25. 11. 2026</div>
-  <div class="url">https://github.com/Zorvoan/agenti_napojeni-na-git/tree/claude/ai-agents-github-setup-n7ew21</div>
-  <div class="pouzito"><b>Použito pro:</b> screenshoty 05, 06 (skutečný výstup <code>git</code> při vytvoření commitu <code>a1465f3</code> a pushi větve) a 19 (výňatek z ukázkových workflow [16]). Terminálový výstup je vykreslen do obrázku beze změny textu.</div>
-</div>
-
-<h3 style="break-before:page">Seznam obrázků v návodu a jejich původ</h3>
-<table class="tab"><colgroup><col style="width:6%"><col style="width:40%"><col style="width:42%"><col style="width:12%"></colgroup>
-  <thead><tr><th>Č.</th><th>Obrázek (soubor ve složce <code>podklady/img</code>)</th><th>Původ</th><th>Zdroj</th></tr></thead>
-  <tbody>
-    <tr><td>01</td><td>01_claude_docs_connect_github.png</td><td><span class="tag tag-c">C</span> screenshot code.claude.com</td><td>[1]</td></tr>
-    <tr><td>02</td><td>02_claude_docs_auth_options.png</td><td><span class="tag tag-c">C</span> screenshot code.claude.com</td><td>[2]</td></tr>
-    <tr><td>03</td><td>03_claude_docs_start_task.png</td><td><span class="tag tag-c">C</span> screenshot code.claude.com</td><td>[1]</td></tr>
-    <tr><td>05</td><td>05_claude_terminal_commit_push.png</td><td><span class="tag tag-a">A</span> vlastní výstup</td><td>[19]</td></tr>
-    <tr><td>06</td><td>06_claude_terminal_verify.png</td><td><span class="tag tag-a">A</span> vlastní výstup</td><td>[19]</td></tr>
-    <tr><td>07</td><td>07_github_install_app_select_repos.png</td><td><span class="tag tag-b">B</span> assets/images/github-apps/install-app.png</td><td>[17], [9]</td></tr>
-    <tr><td>08</td><td>08_github_revoke_app.png</td><td><span class="tag tag-b">B</span> assets/images/help/settings/revoke-github-app.png</td><td>[12]</td></tr>
-    <tr><td>09</td><td>09_copilot_assignees.png</td><td><span class="tag tag-b">B</span> assets/images/help/issues/assignee-menu.png</td><td>[4]</td></tr>
-    <tr><td>10</td><td>10_copilot_assign.png</td><td><span class="tag tag-b">B</span> assets/images/help/copilot/cloud-agent/assign-to-copilot.png</td><td>[4]</td></tr>
-    <tr><td>11</td><td>11_copilot_assign_dialog.png</td><td><span class="tag tag-b">B</span> …/cloud-agent/assign-to-copilot-dialog.png</td><td>[4]</td></tr>
-    <tr><td>12</td><td>12_copilot_comment_pr.png</td><td><span class="tag tag-b">B</span> …/cloud-agent/comment-to-agent-on-pr.png</td><td>[4]</td></tr>
-    <tr><td>13</td><td>13_copilot_approve_workflows.png</td><td><span class="tag tag-b">B</span> …/cloud-agent/approve-and-run-workflows.png</td><td>[8]</td></tr>
-    <tr><td>14</td><td>14_copilot_firewall.png</td><td><span class="tag tag-b">B</span> …/cloud-agent/firewall-warning.png</td><td>[13]</td></tr>
-    <tr><td>15</td><td>15_github_settings_tab.png</td><td><span class="tag tag-b">B</span> assets/images/help/repository/repo-actions-settings.png</td><td>[10]</td></tr>
-    <tr><td>16</td><td>16_github_actions_secrets.png</td><td><span class="tag tag-b">B</span> assets/images/help/repository/actions-secrets-tab.png</td><td>[10]</td></tr>
-    <tr><td>17</td><td>17_github_actions_variables.png</td><td><span class="tag tag-b">B</span> assets/images/help/repository/actions-variables-tab.png</td><td>[11]</td></tr>
-    <tr><td>18</td><td>18_github_app_private_key.png</td><td><span class="tag tag-b">B</span> assets/images/github-apps/github-apps-private-key-fingerprint-new.png</td><td>[18]</td></tr>
-    <tr><td>19</td><td>19_gemini_workflows.png</td><td><span class="tag tag-a">A</span> výňatek z ukázkových workflow</td><td>[16], [19]</td></tr>
-  </tbody>
-</table>
 </body>
 </html>

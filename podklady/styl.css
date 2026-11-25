@@ -53,7 +53,7 @@ table.tab { width: 100%; border-collapse: collapse; font-size: 10pt; margin: 8pt
 .tab tr:last-child td { border-bottom: 1pt solid #000; }
 .tab tr { break-inside: avoid; }
 
-.poznamka { font-size: 10.5pt; border-left: 1.5pt solid #000; padding-left: 8pt; margin: 8pt 0; }
+.poznamka { text-align: left; font-size: 10.5pt; border-left: 1.5pt solid #000; padding-left: 8pt; margin: 8pt 0; }
 
 /* zdroje */
 .zdroje { padding-left: 0; list-style: none; }
