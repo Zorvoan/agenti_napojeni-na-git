@@ -11,3 +11,7 @@ Odevzdávané soubory:
 
 - `AI_agenti_napojeni_na_GitHub.pdf` – návod se screenshoty
 - `Zdroje.pdf` – seznam použitých zdrojů
+- `podklady/` – zdrojové HTML obou PDF (`navod.html`, `zdroje.html`, `styl.css`)
+  a všechny použité screenshoty (`podklady/img/`)
+
+PDF se generují z HTML tiskem v Chromiu (Playwright, `page.pdf`, formát A4).
