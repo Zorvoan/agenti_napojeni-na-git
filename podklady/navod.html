@@ -7,299 +7,288 @@
 </head>
 <body>
 
-<section class="titul">
-  <div class="titul-pruh"></div>
-  <p class="nadtitul">Návod</p>
-  <h1>AI agenti – napojení na GitHub</h1>
-  <p class="podtitul">Jak v AI agentovi nastavit přístup ke konkrétnímu GitHub repozitáři, aby v něm mohl pracovat a dělat změny. Postup na třech různých agentech.</p>
-  <table class="titul-agenti">
-    <tr><td class="cislo">1</td><td><b>Claude Code v cloudu</b> (claude.ai/code)<br><span>Anthropic · přístup přes Claude GitHub App nebo token z <code>gh</code></span></td></tr>
-    <tr><td class="cislo">2</td><td><b>GitHub Copilot – cloud agent</b><br><span>GitHub · agent zabudovaný přímo v GitHubu</span></td></tr>
-    <tr><td class="cislo">3</td><td><b>Gemini CLI jako GitHub Action</b> (<code>run-gemini-cli</code>)<br><span>Google · agent běží v GitHub Actions daného repozitáře</span></td></tr>
-  </table>
-  <p class="titul-meta">Ukázkový repozitář: <code>github.com/Zorvoan/agenti_napojeni-na-git</code><br>
-  Stav dokumentace k 25. 11. 2026 · seznam zdrojů je v samostatném souboru <b>Zdroje.pdf</b></p>
-</section>
+<div class="titul">
+  <div class="nahore">
+    <h1>AI agenti – napojení na GitHub</h1>
+    <p class="pod">Postup nastavení přístupu AI agenta ke konkrétnímu GitHub repozitáři na příkladu tří agentů: Claude Code, GitHub Copilot a Gemini CLI</p>
+  </div>
+  <div class="dole">
+    Ukázkový repozitář: github.com/Zorvoan/agenti_napojeni-na-git<br>
+    Datum: 25. 11. 2026<br>
+    Příloha: Zdroje.pdf
+  </div>
+</div>
 
 <section>
-<h2>Obsah</h2>
+<h2 class="bez">Obsah</h2>
 <ol class="obsah">
-  <li>Jak číst tento návod (původ screenshotů)</li>
-  <li>Společné principy: jak agent získá přístup k repozitáři</li>
-  <li>Agent 1 – Claude Code v cloudu</li>
-  <li>Agent 2 – GitHub Copilot cloud agent</li>
-  <li>Agent 3 – Gemini CLI jako GitHub Action</li>
-  <li>Srovnání všech tří agentů</li>
-  <li>Bezpečnostní kontrolní seznam</li>
+  <li>1&nbsp;&nbsp;Úvod</li>
+  <li>2&nbsp;&nbsp;Jak agent získá přístup k repozitáři</li>
+  <li>3&nbsp;&nbsp;Claude Code v cloudu</li>
+  <li>4&nbsp;&nbsp;GitHub Copilot cloud agent</li>
+  <li>5&nbsp;&nbsp;Gemini CLI jako GitHub Action</li>
+  <li>6&nbsp;&nbsp;Srovnání agentů</li>
+  <li>7&nbsp;&nbsp;Bezpečnost</li>
 </ol>
 
-<h2>1&nbsp;&nbsp;Jak číst tento návod</h2>
-<p>Každý obrázek má pod sebou popisek se zkratkou, která říká, odkud pochází. Čísla v hranatých závorkách, například [4], odkazují na zdroje v souboru <b>Zdroje.pdf</b>.</p>
-<table class="legenda">
-  <tr><td><span class="tag tag-a">A</span></td><td><b>Vlastní screenshot nebo výstup.</b> Pořízeno při tvorbě tohoto návodu: skutečný výstup terminálu z cloudové relace Claude Code, která pracovala v ukázkovém repozitáři.</td></tr>
-  <tr><td><span class="tag tag-b">B</span></td><td><b>Oficiální screenshot GitHubu.</b> Obrázek z oficiální dokumentace GitHub Docs (repozitář <code>github/docs</code>). Ukazuje skutečné rozhraní GitHubu, ale na ukázkovém účtu GitHubu (např. <i>octocat</i>).</td></tr>
-  <tr><td><span class="tag tag-c">C</span></td><td><b>Screenshot oficiální dokumentace výrobce.</b> Pořízeno automatizovaným prohlížečem z code.claude.com, ukazuje přesný oficiální postup.</td></tr>
-</table>
-<div class="pozn">Rozhraní všech tří služeb se často mění. Názvy tlačítek a nabídek jsou uvedeny anglicky přesně tak, jak je používá dokumentace; v rozhraní je hledejte pod stejným názvem.</div>
+<h2 style="margin-top:22pt">Úvod</h2>
+<p>Cílem návodu je ukázat, jak AI agentovi nastavit přístup ke konkrétnímu repozitáři na GitHubu tak, aby v něm mohl pracovat: číst kód, vytvářet větve, commitovat a otevírat pull requesty. Postup je ukázán na třech agentech od různých výrobců, kteří se k repozitáři připojují každý jiným způsobem:</p>
+<ol>
+  <li><b>Claude Code v cloudu</b> (Anthropic) – agent běží na serverech výrobce a k repozitáři se připojí přes aplikaci Claude GitHub App.</li>
+  <li><b>GitHub Copilot cloud agent</b> (GitHub) – agent je přímo součástí GitHubu, přístup se jen povolí v nastavení.</li>
+  <li><b>Gemini CLI jako GitHub Action</b> (Google) – agent běží v GitHub Actions přímo v repozitáři.</li>
+</ol>
+<p>Čísla v hranatých závorkách odkazují na seznam zdrojů v příloze Zdroje.pdf. Názvy tlačítek a nabídek jsou uvedeny anglicky tak, jak je používá rozhraní i dokumentace.</p>
+<p class="poznamka">Poznámka ke screenshotům: snímky terminálu jsou pořízeny při tvorbě tohoto návodu v ukázkovém repozitáři. Snímky rozhraní GitHubu jsou převzaty z oficiální dokumentace GitHub Docs a snímky postupu u Claude Code z oficiální dokumentace code.claude.com. U každého obrázku je uveden zdroj.</p>
 </section>
 
 <section>
-<h2>2&nbsp;&nbsp;Společné principy: jak agent získá přístup k repozitáři</h2>
-<p>Aby AI agent mohl v repozitáři pracovat (číst kód, vytvářet větve, commitovat a otevírat pull requesty), potřebuje od GitHubu <b>oprávnění</b>. Používají se čtyři mechanismy:</p>
+<h2>Jak agent získá přístup k repozitáři</h2>
+<p>Agent potřebuje od GitHubu oprávnění. V praxi se používají čtyři způsoby:</p>
 <table class="tab">
-  <thead><tr><th>Mechanismus</th><th>Jak funguje</th><th>Kdo ho používá v tomto návodu</th></tr></thead>
+  <colgroup><col style="width:24%"><col style="width:50%"><col style="width:26%"></colgroup>
+  <thead><tr><th>Způsob</th><th>Jak funguje</th><th>Použito u agenta</th></tr></thead>
   <tbody>
-    <tr><td><b>GitHub App</b></td><td>Aplikace se nainstaluje na účet nebo organizaci a dostane přesně vyjmenovaná oprávnění (např. <i>Contents: Read &amp; write</i>). Při instalaci lze zvolit <b>Only select repositories</b>, tedy jen vybrané repozitáře [9].</td><td>Claude Code (Claude GitHub App), Gemini (vlastní GitHub App)</td></tr>
-    <tr><td><b>OAuth autorizace / token uživatele</b></td><td>Agent jedná jménem uživatele s jeho oprávněními (např. token z GitHub CLI <code>gh</code>).</td><td>Claude Code (<code>/web-setup</code>)</td></tr>
-    <tr><td><b>Vestavěný agent GitHubu</b></td><td>Agent je součástí GitHubu, přístup se jen povolí v nastavení a omezí na repozitáře [5].</td><td>GitHub Copilot cloud agent</td></tr>
-    <tr><td><b><code>GITHUB_TOKEN</code> v GitHub Actions</b></td><td>Krátkodobý token, který GitHub vytvoří pro každý běh workflow. Platí jen pro daný repozitář a oprávnění se nastavují v bloku <code>permissions:</code> [15].</td><td>Gemini CLI (výchozí varianta)</td></tr>
+    <tr><td>GitHub App</td><td>Aplikace se nainstaluje na účet nebo organizaci a dostane jen vyjmenovaná oprávnění (např. <i>Contents: Read &amp; write</i>). Při instalaci lze zvolit <i>Only select repositories</i> [9].</td><td>Claude Code, Gemini CLI</td></tr>
+    <tr><td>Token uživatele (OAuth)</td><td>Agent jedná jménem uživatele a s jeho oprávněními, např. s tokenem z GitHub CLI <code>gh</code>.</td><td>Claude Code (<code>/web-setup</code>)</td></tr>
+    <tr><td>Vestavěný agent GitHubu</td><td>Agent je součástí GitHubu, přístup se povolí v nastavení a omezí na vybrané repozitáře [5].</td><td>GitHub Copilot</td></tr>
+    <tr><td><code>GITHUB_TOKEN</code></td><td>Krátkodobý token, který GitHub vytvoří pro každý běh workflow. Platí jen pro daný repozitář, oprávnění se nastavují v bloku <code>permissions:</code> [15].</td><td>Gemini CLI</td></tr>
   </tbody>
 </table>
-
-<h3>Tři pravidla, která platí pro všechny agenty</h3>
-<ol>
-  <li><b>Princip nejmenších oprávnění.</b> Agentovi dejte přístup jen k repozitáři, ve kterém má pracovat (volba <i>Only select repositories</i>), a jen ta oprávnění, která potřebuje.</li>
-  <li><b>Agent pracuje ve vlastní větvi a výsledek předá jako pull request.</b> Do hlavní větve <code>main</code> má změny pouštět až člověk po kontrole.</li>
-  <li><b>Chraňte hlavní větev</b> pravidly <i>branch protection</i> nebo <i>rulesets</i> (povinná revize, povinné testy). Dokumentace Claude Code to výslovně doporučuje, protože jeho proxy samo neomezuje, do kterých větví lze pushovat [3]. Doporučuje to i dokumentace Gemini [16].</li>
-</ol>
-
-<p>Jak vypadá instalační dialog GitHub App s volbou <b>Only select repositories</b>, ukazuje obrázek u agenta 1, krok 3.</p>
+<p>Pro všechny tři agenty platí stejná doporučení:</p>
+<ul>
+  <li>dávat agentovi přístup jen k repozitáři, ve kterém má pracovat, a jen potřebná oprávnění,</li>
+  <li>nechat agenta pracovat ve vlastní větvi a změny přebírat přes pull request s kontrolou člověkem,</li>
+  <li>chránit hlavní větev pravidly <i>branch protection</i> nebo <i>rulesets</i>. Dokumentace Claude Code to doporučuje výslovně, protože jeho proxy samo neomezuje, do kterých větví se pushuje [3]. Stejně to doporučuje dokumentace Gemini [16].</li>
+</ul>
 </section>
 
-<!-- ============================ AGENT 1 ============================ -->
+<!-- ===== CLAUDE ===== -->
 <section>
-<h2 class="agent"><span class="agent-cislo">1</span> Claude Code v cloudu (claude.ai/code)</h2>
-<p class="perex">Claude Code v cloudu naklonuje vybraný repozitář do izolovaného virtuálního stroje u Anthropicu, provede úpravy, spustí testy a <b>pushne vlastní větev</b>. Z ní pak jedním klikem vytvoříte pull request [1]. Tento návod vznikl právě v takové relaci, takže kroky 5 a 6 ukazují skutečný průběh.</p>
+<h2>Claude Code v cloudu</h2>
+<p>Claude Code v cloudu naklonuje vybraný repozitář do izolovaného virtuálního stroje, provede úpravy, spustí testy a výsledek nahraje do nové větve. Z ní se potom vytvoří pull request [1]. V takové relaci vznikl i tento návod, takže kapitola 3.6 ukazuje skutečný průběh.</p>
+<p><b>Předpoklady:</b> účet na claude.ai s plánem Pro, Max, Ultra nebo Team (u Enterprise prémiové místo) [1] a účet na GitHubu s právem zápisu do repozitáře. Agent pracuje jen s existujícím repozitářem, nový je proto potřeba nejdřív založit na GitHubu [1].</p>
 
-<div class="predpoklady"><b>Předpoklady:</b> účet claude.ai s plánem Pro, Max, Ultra nebo Team (u Enterprise prémiové místo) [1]; účet na GitHubu s repozitářem, ve kterém máte právo zápisu. Cloudové relace pracují jen s existujícími repozitáři, nový repozitář proto nejdřív založte na GitHubu (stačí s README) [1].</div>
-
-<h3>Krok 1: Otevřete claude.ai/code a přihlaste se</h3>
-<p>Jděte na <code>https://claude.ai/code</code> a přihlaste se účtem claude.ai [1].</p>
-
-<h3>Krok 2: Propojte GitHub (Sign in with GitHub)</h3>
-<p>Po přihlášení vás claude.ai/code vyzve k propojení s GitHubem. Budete přesměrováni na autorizační stránku GitHubu. Žádost schvalte a GitHub vás vrátí zpět [1]. Propojení se dělá jen jednou.</p>
+<h3>Přihlášení a propojení s GitHubem</h3>
+<ol>
+  <li>Otevřete <code>https://claude.ai/code</code> a přihlaste se účtem claude.ai.</li>
+  <li>Stránka vás vyzve k propojení s GitHubem (<i>Sign in with GitHub</i>). Na autorizační stránce GitHubu žádost schvalte, GitHub vás vrátí zpět [1].</li>
+</ol>
+<p>Na plánech Team a Enterprise musí nejdřív vlastník organizace zapnout konektor GitHub v <i>Organization settings &gt; Connectors</i> [1].</p>
 <figure>
   <img src="img/01_claude_docs_connect_github.png">
-  <figcaption><span class="tag tag-c">C</span> Oficiální postup „Connect GitHub“: 1. Visit claude.ai/code, 2. Sign in with GitHub. Na plánech Team/Enterprise musí nejprve vlastník organizace zapnout GitHub konektor (Organization settings › Connectors). Zdroj: [1].</figcaption>
+  <figcaption>Postup „Connect GitHub“ v oficiální dokumentaci (zdroj: [1])</figcaption>
 </figure>
 
-<h3>Krok 3: Udělte přístup ke konkrétnímu repozitáři (Claude GitHub App)</h3>
-<p>Samotné propojení umožní pracovat s veřejnými repozitáři. Pro <b>soukromý</b> repozitář musí být na něm nainstalovaná <b>Claude GitHub App</b> [1]:</p>
+<h3>Přístup ke konkrétnímu repozitáři</h3>
+<p>Propojení samo stačí pro veřejné repozitáře. Pro soukromý repozitář musí být na repozitáři nainstalovaná aplikace <b>Claude GitHub App</b> [1]:</p>
 <ol>
-  <li>Otevřete <code>https://github.com/apps/claude/installations/new</code> (nebo potvrďte výzvu během onboardingu).</li>
-  <li>Vyberte účet nebo organizaci, které repozitář patří. V organizaci může být nutný souhlas vlastníka organizace [1].</li>
-  <li>Zvolte <b>Only select repositories</b> a v seznamu <b>Select repositories</b> vyberte svůj repozitář (zde <code>agenti_napojeni-na-git</code>) [9].</li>
-  <li>Zkontrolujte požadovaná oprávnění a klikněte na <b>Install</b> [9].</li>
+  <li>Otevřete <code>https://github.com/apps/claude/installations/new</code> (nebo potvrďte výzvu během prvního nastavení).</li>
+  <li>Vyberte účet nebo organizaci, které repozitář patří. V organizaci může instalaci schvalovat její vlastník [1].</li>
+  <li>Zvolte <i>Only select repositories</i> a v seznamu <i>Select repositories</i> vyberte repozitář [9].</li>
+  <li>Zkontrolujte oprávnění a klikněte na <i>Install</i> [9].</li>
 </ol>
 <figure>
-  <img src="img/07_github_install_app_select_repos.png" style="width:44%">
-  <figcaption><span class="tag tag-b">B</span> Obecný instalační dialog GitHub App: volba <b>All repositories</b> / <b>Only select repositories</b> a seznam oprávnění, která aplikace získá. Stejný dialog uvidíte při instalaci Claude GitHub App i vlastní aplikace pro Gemini. Zdroj: [9], [17].</figcaption>
+  <img src="img/07_github_install_app_select_repos.png" style="width:48%">
+  <figcaption>Instalace GitHub App s volbou „Only select repositories“ (zdroj: GitHub Docs [9], [17])</figcaption>
 </figure>
-<p>Instalace aplikace navíc zapíná funkci <b>Auto-fix</b>: Claude pak může reagovat na selhání CI a na komentáře z revize v pull requestech [1].</p>
-<p><b>Alternativa pro vývojáře s GitHub CLI:</b> v terminálu spusťte <code>gh auth login</code>, v Claude Code CLI se přihlaste <code>/login</code> a zadejte <code>/web-setup</code>. Token z <code>gh</code> se uloží šifrovaně k vašemu účtu Claude. Cloudové relace pak mají přístup ke všem repozitářům, ke kterým má přístup tento token, i bez instalace aplikace [1], [2].</p>
+<p>Instalací aplikace se zároveň zapne funkce <i>Auto-fix</i>, se kterou Claude reaguje na chyby CI a na komentáře v pull requestech [1].</p>
+<p>Druhá možnost je pro uživatele GitHub CLI: v terminálu spustit <code>gh auth login</code>, v Claude Code CLI se přihlásit příkazem <code>/login</code> a zadat <code>/web-setup</code>. Token z <code>gh</code> se uloží šifrovaně k účtu Claude a cloudové relace pak mají přístup ke všem repozitářům, ke kterým má přístup tento token [1], [2].</p>
 <figure>
   <img src="img/02_claude_docs_auth_options.png">
-  <figcaption><span class="tag tag-c">C</span> Dva způsoby, jak dát Claude Code přístup k GitHubu: <b>GitHub App</b> (veřejné repozitáře a soukromé repozitáře s nainstalovanou aplikací) nebo <b>/web-setup</b> (repozitáře dostupné tokenu <code>gh</code>). Zdroj: [2].</figcaption>
+  <figcaption>Srovnání obou způsobů autorizace – GitHub App a /web-setup (zdroj: [2])</figcaption>
 </figure>
 
-<h3>Krok 4: Prostředí (environment)</h3>
-<p>Po propojení vznikne cloudové prostředí <b>Default</b> s omezeným přístupem k síti (<i>Limited</i>): relace dosáhne jen na běžné registry balíčků a povolené domény. Na plánech Team/Enterprise prostředí vytvoříte ve formuláři <i>Create your first cloud environment</i> tlačítkem <b>Create &amp; finish</b> [1]. V nastavení prostředí lze později přidat povolené domény, proměnné prostředí a <i>setup script</i>, který se spustí při startu relace [3].</p>
+<h3>Prostředí</h3>
+<p>Po propojení vznikne prostředí <i>Default</i> s omezeným přístupem k síti (<i>Limited</i>). Relace se dostane jen k běžným registrům balíčků a povoleným doménám. Na plánech Team a Enterprise se prostředí vytvoří ve formuláři <i>Create your first cloud environment</i> tlačítkem <i>Create &amp; finish</i> [1]. Později lze v prostředí přidat povolené domény, proměnné prostředí a skript, který se spustí při startu relace [3].</p>
 
-<h3>Krok 5: Zadejte úkol: vyberte repozitář, větev a režim oprávnění</h3>
+<h3>Zadání úkolu</h3>
 <ol>
-  <li>Pod vstupním polem klikněte na výběr repozitáře a zvolte svůj repozitář. Vedle něj můžete změnit výchozí větev [1].</li>
-  <li>Zvolte režim oprávnění: <b>Auto</b> (akce kontroluje klasifikátor), <b>Accept edits</b> (Claude upravuje a pushne větev bez ptaní) nebo <b>Plan</b> (nejdřív navrhne postup a čeká na schválení) [1].</li>
-  <li>Konkrétně popište úkol (soubor, funkci, očekávané chování) a odešlete ho klávesou Enter [1].</li>
+  <li>Pod vstupním polem vyberte repozitář a případně větev, od které má agent začít [1].</li>
+  <li>Zvolte režim oprávnění: <i>Auto</i> (akce kontroluje klasifikátor), <i>Accept edits</i> (agent upravuje soubory a nahraje větev bez dotazu) nebo <i>Plan</i> (agent nejdřív navrhne postup a čeká na schválení) [1].</li>
+  <li>Napište konkrétní zadání a odešlete ho [1].</li>
 </ol>
 <figure>
   <img src="img/03_claude_docs_start_task.png">
-  <figcaption><span class="tag tag-c">C</span> Oficiální postup „Start a task“: výběr repozitáře a větve, volba režimu oprávnění. Zdroj: [1].</figcaption>
+  <figcaption>Postup „Start a task“ – výběr repozitáře, větve a režimu oprávnění (zdroj: [1])</figcaption>
 </figure>
 
-<h3>Krok 6: Agent pracuje v repozitáři a pushne větev</h3>
-<p>Claude repozitář naklonuje, provede změny a commitne je do vlastní větve (zde <code>claude/ai-agents-github-setup-n7ew21</code>). Tu pak pushne na GitHub. Následující výstup je <b>skutečný průběh</b> relace, ve které vznikl tento návod:</p>
-<figure>
-  <img src="img/05_claude_terminal_commit_push.png">
-  <figcaption><span class="tag tag-a">A</span> Skutečný výstup terminálu cloudové relace Claude Code (25. 11. 2026): kontrola vzdáleného repozitáře, vytvoření commitu a <code>git push</code> nové větve na GitHub. Varování „push negotiation failed“ je jen informativní, push proběhl (viz další obrázek).</figcaption>
-</figure>
-<figure>
-  <img src="img/06_claude_terminal_verify.png">
-  <figcaption><span class="tag tag-a">A</span> Ověření: větev s commitem <code>a1465f3</code> je na GitHubu (<code>git ls-remote</code>) a lokální větev je synchronizovaná se vzdálenou.</figcaption>
-</figure>
-<p>Výsledek zkontrolujete v claude.ai/code: zobrazíte si změny (diff), přidáte komentáře, vytvoříte <b>pull request</b> nebo pošlete další zprávu a agent pokračuje [1].</p>
+<h3>Kontrola výsledku</h3>
+<p>Ve webovém rozhraní se zobrazí změny (diff). Můžete k nim psát komentáře, vytvořit pull request nebo poslat další zadání [1].</p>
 
-<h3>Jak to funguje uvnitř a jak přístup odebrat</h3>
-<ul>
-  <li>Vaše skutečné přihlašovací údaje ke GitHubu se do virtuálního stroje nedostanou. Git operace jdou přes <b>GitHub proxy</b>, která vymění omezený pověřovací údaj za váš token. Proxy odmítne mazání větví a push tagů a obsluhuje jen repozitáře připojené k relaci [3].</li>
-  <li><b>Odebrání přístupu:</b> GitHub odpojíte na <code>claude.ai/customize/connectors</code> [1]. Aplikaci odinstalujete nebo autorizaci zrušíte na GitHubu v <i>Settings › Applications</i> [1], [12].</li>
-</ul>
+<h3>Ukázka: agent pracuje v repozitáři</h3>
+<p>Agent pracuje ve vlastní větvi, zde <code>claude/ai-agents-github-setup-n7ew21</code>. Následující snímek je pořízen v relaci, ve které vznikl tento návod. Agent vytvořil commit, nahrál ho na GitHub a ověřil, že větev na GitHubu existuje:</p>
 <figure>
-  <img src="img/08_github_revoke_app.png" style="width:78%">
-  <figcaption><span class="tag tag-b">B</span> GitHub › Settings › Applications › <b>Authorized GitHub Apps</b>: tlačítkem <b>Revoke</b> zrušíte autorizaci aplikace. Zdroj: [12].</figcaption>
+  <img src="img/05_terminal_claude.png">
+  <figcaption>Commit a push z cloudové relace Claude Code do ukázkového repozitáře (snímek terminálu, 25. 11. 2026)</figcaption>
+</figure>
+
+<h3>Jak je přístup zabezpečený a jak ho odebrat</h3>
+<p>Skutečné přihlašovací údaje ke GitHubu se do virtuálního stroje nedostanou. Git operace jdou přes proxy, která omezený pověřovací údaj nahradí skutečným tokenem. Proxy nedovolí mazat větve ani pushovat tagy a obsluhuje jen repozitáře připojené k relaci [3].</p>
+<p>Přístup se odebírá odpojením GitHubu na <code>claude.ai/customize/connectors</code> [1]. Na GitHubu lze aplikaci odinstalovat nebo zrušit její autorizaci v <i>Settings &gt; Applications</i> [12].</p>
+<figure>
+  <img src="img/08_github_revoke_app.png" style="width:80%">
+  <figcaption>Zrušení autorizace aplikace tlačítkem „Revoke“ v nastavení GitHubu (zdroj: GitHub Docs [12])</figcaption>
 </figure>
 </section>
 
-<!-- ============================ AGENT 2 ============================ -->
+<!-- ===== COPILOT ===== -->
 <section>
-<h2 class="agent"><span class="agent-cislo">2</span> GitHub Copilot cloud agent</h2>
-<p class="perex">Copilot cloud agent je zabudovaný přímo v GitHubu. Nic se neinstaluje, přístup se jen povolí pro vybrané repozitáře. Úkol mu zadáte přiřazením issue nebo z karty <b>Agents</b>. Agent pracuje ve větvi <code>copilot/…</code> a otevře pull request [4], [6].</p>
+<h2>GitHub Copilot cloud agent</h2>
+<p>Copilot cloud agent je součástí GitHubu, takže se nic neinstaluje. Přístup se povolí pro vybrané repozitáře a úkol se agentovi zadá přiřazením issue nebo na kartě <i>Agents</i>. Agent pracuje ve větvi <code>copilot/…</code> a výsledek odevzdá jako pull request [4], [6].</p>
+<p><b>Předpoklady:</b> některý z placených plánů GitHub Copilot. U Copilot Business a Enterprise o použití agenta rozhoduje politika organizace [5].</p>
 
-<div class="predpoklady"><b>Předpoklady:</b> placený plán GitHub Copilot (cloud agent je dostupný ve všech placených plánech). U Copilot Business/Enterprise o použití rozhoduje politika organizace nebo enterprise [5].</div>
-
-<h3>Krok 1: Povolte agenta pro konkrétní repozitář</h3>
-<p>Ve výchozím stavu je agent povolen ve všech repozitářích. Přístup jen ke konkrétnímu repozitáři nastavíte takto [5]:</p>
+<h3>Povolení agenta pro konkrétní repozitář</h3>
+<p>Ve výchozím stavu je agent povolen ve všech repozitářích. Omezení na jeden repozitář se nastaví takto [5]:</p>
 <ol>
-  <li>Vpravo nahoře klikněte na profilový obrázek a zvolte <b>Copilot settings</b>.</li>
-  <li>V postranním panelu v sekci <b>Copilot</b> klikněte na <b>Cloud agent</b> (přímo <code>github.com/settings/copilot/coding_agent</code>).</li>
-  <li>V části <i>Policies</i> u položky <b>Repository access</b> zvolte <b>Only selected repositories</b>.</li>
-  <li>Klikněte na <b>Select repositories</b> a vyberte svůj repozitář.</li>
+  <li>Vpravo nahoře klikněte na profilový obrázek a zvolte <i>Copilot settings</i>.</li>
+  <li>V levém panelu v části <i>Copilot</i> zvolte <i>Cloud agent</i> (adresa <code>github.com/settings/copilot/coding_agent</code>).</li>
+  <li>V části <i>Policies</i> u položky <i>Repository access</i> vyberte <i>Only selected repositories</i>.</li>
+  <li>Klikněte na <i>Select repositories</i> a vyberte repozitář.</li>
 </ol>
-<p>Na stejné stránce lze v části <i>Partner agents</i> zapnout i agenty třetích stran (Anthropic Claude, OpenAI Codex). Ti mají přístup ke stejným repozitářům jako Copilot cloud agent [5].</p>
+<p>Na stejné stránce lze v části <i>Partner agents</i> zapnout i agenty třetích stran (Claude, Codex). Ti mají přístup ke stejným repozitářům jako Copilot [5].</p>
 
-<h3>Krok 2: Zadejte úkol přiřazením issue</h3>
+<h3>Zadání úkolu přes issue</h3>
 <ol>
-  <li>V repozitáři otevřete kartu <b>Issues</b> a vyberte issue s popisem úkolu [4].</li>
-  <li>V pravém panelu klikněte na <b>Assignees</b> [4].</li>
+  <li>V repozitáři otevřete kartu <i>Issues</i> a issue s popisem úkolu.</li>
+  <li>V pravém panelu klikněte na <i>Assignees</i> a ze seznamu vyberte <i>Copilot</i> [4].</li>
 </ol>
-<div class="dva">
+<div class="vedle">
 <figure>
   <img src="img/09_copilot_assignees.png">
-  <figcaption><span class="tag tag-b">B</span> Pravý panel issue: sekce <b>Assignees</b>. Zdroj: [4].</figcaption>
+  <figcaption>Sekce „Assignees“ v panelu issue (zdroj: GitHub Docs [4])</figcaption>
 </figure>
 <figure>
   <img src="img/10_copilot_assign.png">
-  <figcaption><span class="tag tag-b">B</span> V seznamu možných řešitelů je <b>Copilot</b>. Zdroj: [4].</figcaption>
+  <figcaption>Copilot v seznamu řešitelů (zdroj: GitHub Docs [4])</figcaption>
 </figure>
 </div>
 <ol start="3">
-  <li>Ze seznamu vyberte <b>Copilot</b>. Otevře se dialog s dalšími volbami: cílový repozitář, výchozí větev, případně vlastní agent a doplňující instrukce. Potvrďte tlačítkem <b>Assign</b> [4].</li>
+  <li>V zobrazeném dialogu lze zvolit repozitář, výchozí větev a doplnit instrukce. Potvrďte tlačítkem <i>Assign</i> [4].</li>
 </ol>
 <figure>
   <img src="img/11_copilot_assign_dialog.png" style="width:80%">
-  <figcaption><span class="tag tag-b">B</span> Dialog „Assign Copilot to issue“: volitelný prompt, výběr repozitáře a výchozí větve, tlačítko <b>Assign</b>. Zdroj: [4].</figcaption>
+  <figcaption>Dialog „Assign Copilot to issue“ (zdroj: GitHub Docs [4])</figcaption>
 </figure>
-<p><b>Další způsoby zadání:</b> karta <b>Agents</b> v repozitáři, stránka <code>github.com/copilot</code>, tlačítko <b>Task</b> na dashboardu (v rozbalovací nabídce vyberete repozitář) nebo příkaz <code>/task</code> v Copilot Chatu [4].</p>
+<p>Úkol lze zadat i z karty <i>Agents</i> v repozitáři, ze stránky <code>github.com/copilot</code>, tlačítkem <i>Task</i> na úvodní stránce GitHubu nebo příkazem <code>/task</code> v Copilot Chatu [4].</p>
 
-<h3>Krok 3: Sledujte práci a iterujte</h3>
-<p>Agent vytvoří větev a pull request a po dokončení vás požádá o revizi. Na další úpravy stačí v pull requestu napsat komentář s <code>@copilot</code>. Na komentáři se objeví reakce emoji očí (👀) a v časové ose se objeví „Copilot started work“ [4].</p>
+<h3>Průběh práce a další úpravy</h3>
+<p>Agent vytvoří větev a pull request a po dokončení požádá o kontrolu. Další úpravy se zadávají komentářem s <code>@copilot</code> v pull requestu. Agent na komentář zareaguje a v historii pull requestu se objeví záznam „Copilot started work“ [4].</p>
 <figure>
   <img src="img/12_copilot_comment_pr.png">
-  <figcaption><span class="tag tag-b">B</span> Komentář v revizi pull requestu spustí novou práci agenta („Copilot started work on behalf of…“), průběh otevřete tlačítkem <b>View session</b>. Zdroj: [4].</figcaption>
+  <figcaption>Komentář v pull requestu spustí další práci agenta (zdroj: GitHub Docs [4])</figcaption>
 </figure>
 
-<h3>Krok 4: Schválení spuštění GitHub Actions</h3>
-<p>Workflow (CI) se na pushe od Copilota ve výchozím stavu nespustí automaticky. Musíte je schválit tlačítkem <b>Approve and run workflows</b>. Správce repozitáře to může změnit v <i>Settings › Copilot › Cloud agent</i> (volba <i>Require approval for workflow runs</i>), dokumentace před tím ale varuje [8].</p>
+<h3>Schválení spuštění workflow</h3>
+<p>Na změny od Copilota se workflow GitHub Actions ve výchozím stavu nespustí samo. Je potřeba je schválit tlačítkem <i>Approve and run workflows</i>. Správce repozitáře může schvalování vypnout v <i>Settings &gt; Copilot &gt; Cloud agent</i>, dokumentace před tím ale varuje [8].</p>
 <figure>
   <img src="img/13_copilot_approve_workflows.png" style="width:85%">
-  <figcaption><span class="tag tag-b">B</span> Pull request od Copilota: „1 workflow awaiting approval“ a tlačítko <b>Approve and run workflows</b>. Zdroj: [8].</figcaption>
+  <figcaption>Workflow čekající na schválení v pull requestu od Copilota (zdroj: GitHub Docs [8])</figcaption>
 </figure>
 
-<h3>Bezpečnostní omezení agenta</h3>
+<h3>Omezení agenta</h3>
 <ul>
-  <li>Agent smí pushovat <b>jen do jedné větve</b>: buď do větve existujícího pull requestu (při spuštění přes <code>@copilot</code>), nebo do nové větve <code>copilot/…</code>. Platí pro něj i ochrana větví a povinné kontroly [6].</li>
-  <li>Agent nemá přístup k tajným hodnotám (secrets) z Actions. Dostane jen secrets a proměnné z prostředí <code>copilot</code> [7].</li>
-  <li>Přístup k internetu omezuje firewall. Když agent narazí na blokovanou adresu, upozorní na to v pull requestu [6], [13].</li>
+  <li>Agent může pushovat jen do jedné větve: do větve existujícího pull requestu, nebo do nové větve <code>copilot/…</code>. Platí pro něj i ochrana větví [6].</li>
+  <li>Nemá přístup k tajným hodnotám (secrets) repozitáře. Dostane jen hodnoty z prostředí <code>copilot</code> [7].</li>
+  <li>Přístup k internetu omezuje firewall. Zablokovaný požadavek agent oznámí v pull requestu [6], [13].</li>
 </ul>
 <figure>
   <img src="img/14_copilot_firewall.png" style="width:80%">
-  <figcaption><span class="tag tag-b">B</span> Upozornění, že firewall zablokoval agentovi přístup k síťové adrese. Zdroj: [13].</figcaption>
+  <figcaption>Upozornění na požadavek zablokovaný firewallem (zdroj: GitHub Docs [13])</figcaption>
 </figure>
 </section>
 
-<!-- ============================ AGENT 3 ============================ -->
+<!-- ===== GEMINI ===== -->
 <section>
-<h2 class="agent"><span class="agent-cislo">3</span> Gemini CLI jako GitHub Action</h2>
-<p class="perex">Třetí přístup je jiný: agent neběží u výrobce, ale <b>přímo v GitHub Actions vašeho repozitáře</b>. Google poskytuje akci <code>google-github-actions/run-gemini-cli</code>. Agenta zavoláte komentářem <code>@gemini-cli …</code> v issue nebo pull requestu. Umí odpovídat, dělat revize, třídit issue a po schválení plánu i měnit kód (větev + pull request) [14], [16].</p>
+<h2>Gemini CLI jako GitHub Action</h2>
+<p>U třetího agenta je princip jiný: agent neběží u výrobce, ale v GitHub Actions přímo v repozitáři. Google k tomu poskytuje akci <code>google-github-actions/run-gemini-cli</code>. Agent se zavolá komentářem <code>@gemini-cli</code> v issue nebo pull requestu. Umí odpovídat na dotazy, kontrolovat pull requesty, třídit issue a po schválení plánu i upravovat kód [14], [16].</p>
+<p><b>Předpoklady:</b> repozitář s povolenými GitHub Actions, administrátorský přístup k jeho nastavení a API klíč pro Gemini z Google AI Studio [14], [15].</p>
 
-<div class="predpoklady"><b>Předpoklady:</b> repozitář na GitHubu s povolenými GitHub Actions a vlastnické/administrátorské právo k jeho nastavení; API klíč pro Gemini z Google AI Studio [14], [15].</div>
-
-<h3>Krok 1: Získejte API klíč a uložte ho jako secret repozitáře</h3>
+<h3>API klíč jako secret repozitáře</h3>
 <ol>
   <li>V Google AI Studio vytvořte API klíč [15].</li>
-  <li>V repozitáři otevřete kartu <b>Settings</b> [10].</li>
+  <li>V repozitáři otevřete kartu <i>Settings</i> a v levém panelu <i>Secrets and variables &gt; Actions</i> [10].</li>
+  <li>Na kartě <i>Secrets</i> klikněte na <i>New repository secret</i>, jako název zadejte <code>GEMINI_API_KEY</code>, jako hodnotu klíč a potvrďte <i>Add secret</i> [10], [14].</li>
 </ol>
 <figure>
   <img src="img/15_github_settings_tab.png">
-  <figcaption><span class="tag tag-b">B</span> Karta <b>Settings</b> v hlavičce repozitáře. Zdroj: [10].</figcaption>
+  <figcaption>Karta „Settings“ v hlavičce repozitáře (zdroj: GitHub Docs [10])</figcaption>
 </figure>
-<ol start="3">
-  <li>V postranním panelu otevřete <b>Secrets and variables › Actions</b>, na kartě <b>Secrets</b> klikněte na <b>New repository secret</b> [10].</li>
-  <li>Název: <code>GEMINI_API_KEY</code>, hodnota: váš klíč, a potvrďte tlačítkem <b>Add secret</b> [10], [14].</li>
-</ol>
 <figure>
   <img src="img/16_github_actions_secrets.png">
-  <figcaption><span class="tag tag-b">B</span> Stránka „Actions secrets and variables“, karta <b>Secrets</b>. Sem patří <code>GEMINI_API_KEY</code> (a případně <code>APP_PRIVATE_KEY</code>). Zdroj: [10].</figcaption>
+  <figcaption>Stránka „Actions secrets and variables“, karta „Secrets“ (zdroj: GitHub Docs [10])</figcaption>
 </figure>
 
-<h3>Krok 2: Dejte agentovi oprávnění k repozitáři</h3>
-<p><b>Varianta A (jednodušší): výchozí <code>GITHUB_TOKEN</code>.</b> Když nenastavíte vlastní GitHub App, akce použije automatický token workflow. Ten platí jen pro tento repozitář a po skončení jobu vyprší. Oprávnění se zapisují do workflow, např. <code>contents: write</code> pro zápis kódu, <code>issues: write</code>, <code>pull-requests: write</code> [15].</p>
-<p><b>Varianta B (doporučená): vlastní GitHub App</b> s přesně nastavenými oprávněními [15]:</p>
+<h3>Oprávnění k repozitáři</h3>
+<p><b>Varianta A – <code>GITHUB_TOKEN</code>.</b> Pokud se nenastaví vlastní aplikace, akce použije automatický token workflow. Ten platí jen pro tento repozitář a po skončení úlohy vyprší. Oprávnění se zapisují přímo do workflow, např. <code>contents: write</code>, <code>issues: write</code>, <code>pull-requests: write</code> [15].</p>
+<p><b>Varianta B – vlastní GitHub App</b> (doporučuje ji dokumentace) [15]:</p>
 <ol>
-  <li>GitHub › <b>Settings › Developer settings › GitHub Apps › New GitHub App</b>. Vyplňte název (např. <code>Muj-Gemini-Asistent</code>) a Homepage URL.</li>
-  <li>V sekci <i>Webhooks</i> zrušte zaškrtnutí <b>Active</b>.</li>
-  <li>V části <i>Repository permissions</i> nastavte <b>Contents</b>, <b>Issues</b> a <b>Pull requests</b> na <code>Read &amp; write</code>. Dejte jen to, co skutečně potřebujete. Klikněte na <b>Create GitHub App</b>.</li>
-  <li>Na stránce aplikace klikněte na <b>Generate a private key</b>, soubor <code>.pem</code> bezpečně uložte a poznamenejte si <b>App ID</b>.</li>
-  <li>V levém panelu zvolte <b>Install App</b>, vyberte účet, zvolte <b>Only select repositories</b>, vyberte svůj repozitář a klikněte na <b>Install</b>.</li>
-  <li>V repozitáři: <b>Settings › Secrets and variables › Actions</b>. Na kartě <b>Variables</b> přidejte <code>APP_ID</code>, na kartě <b>Secrets</b> přidejte <code>APP_PRIVATE_KEY</code> (celý obsah souboru <code>.pem</code>).</li>
+  <li><i>Settings &gt; Developer settings &gt; GitHub Apps &gt; New GitHub App</i>: vyplňte název aplikace a <i>Homepage URL</i>.</li>
+  <li>V části <i>Webhooks</i> zrušte zaškrtnutí <i>Active</i>.</li>
+  <li>V <i>Repository permissions</i> nastavte <i>Contents</i>, <i>Issues</i> a <i>Pull requests</i> na <i>Read &amp; write</i> a klikněte na <i>Create GitHub App</i>.</li>
+  <li>Klikněte na <i>Generate a private key</i>, uložte soubor <code>.pem</code> a poznamenejte si <i>App ID</i>.</li>
+  <li>V levém panelu zvolte <i>Install App</i>, vyberte účet, zvolte <i>Only select repositories</i>, vyberte repozitář a klikněte na <i>Install</i> (stejný dialog jako na obr. 2).</li>
+  <li>V repozitáři v <i>Settings &gt; Secrets and variables &gt; Actions</i> přidejte proměnnou <code>APP_ID</code> (karta <i>Variables</i>) a secret <code>APP_PRIVATE_KEY</code> s obsahem souboru <code>.pem</code> (karta <i>Secrets</i>).</li>
 </ol>
-<div class="dva">
+<div class="vedle">
 <figure>
   <img src="img/18_github_app_private_key.png">
-  <figcaption><span class="tag tag-b">B</span> Sekce <i>Credentials</i> GitHub App: vygenerovaný soukromý klíč (Private key). Zdroj: [18].</figcaption>
+  <figcaption>Vygenerovaný soukromý klíč aplikace (zdroj: GitHub Docs [18])</figcaption>
 </figure>
 <figure>
   <img src="img/17_github_actions_variables.png">
-  <figcaption><span class="tag tag-b">B</span> Karta <b>Variables</b>: sem patří <code>APP_ID</code>. Zdroj: [11].</figcaption>
+  <figcaption>Karta „Variables“ pro proměnnou APP_ID (zdroj: GitHub Docs [11])</figcaption>
 </figure>
 </div>
-<p>Instalace aplikace na jediný repozitář vypadá stejně jako na obrázku u agenta 1, krok 3 (volba <b>Only select repositories</b>).</p>
 
-<h3>Krok 3: Přidejte do repozitáře workflow</h3>
-<p>Nejjednodušší je spustit lokálně Gemini CLI (<code>gemini</code>) a zadat příkaz <code>/setup-github</code>. Druhá možnost je ručně zkopírovat ukázková workflow z <code>examples/workflows</code> do složky <code>.github/workflows</code>: vždy <code>gemini-dispatch.yml</code> a pro úpravy kódu <code>gemini-invoke.yml</code> a <code>gemini-plan-execute.yml</code> [14], [16]. Do <code>.gitignore</code> přidejte <code>.gemini/</code> a <code>gha-creds-*.json</code> [14].</p>
+<h3>Přidání workflow do repozitáře</h3>
+<p>Workflow se do repozitáře přidají buď příkazem <code>/setup-github</code> v Gemini CLI, nebo zkopírováním ukázkových souborů z <code>examples/workflows</code> do <code>.github/workflows</code>. Vždy je potřeba <code>gemini-dispatch.yml</code>, pro úpravy kódu ještě <code>gemini-invoke.yml</code> a <code>gemini-plan-execute.yml</code> [14], [16]. Do <code>.gitignore</code> se přidá <code>.gemini/</code> a <code>gha-creds-*.json</code> [14].</p>
+<p>Co agent v repozitáři smí, určuje blok <code>permissions</code> ve workflow. Workflow <code>gemini-dispatch.yml</code> navíc agenta spustí jen na komentáře vlastníka, členů a spolupracovníků repozitáře, ne na pull requesty z forků:</p>
 <figure>
-  <img src="img/19_gemini_workflows.png" style="width:92%">
-  <figcaption><span class="tag tag-a">A</span> Výňatek z oficiálních ukázkových workflow (repozitář <code>google-github-actions/run-gemini-cli</code>, commit <code>c8bfcfc</code>): blok <code>permissions</code> určuje, co smí agent v repozitáři dělat. Podmínka v <code>gemini-dispatch.yml</code> pouští agenta jen na komentáře od OWNER/MEMBER/COLLABORATOR a ne na pull requesty z forků. Zdroj: [16].</figcaption>
+  <img src="img/19_terminal_gemini.png">
+  <figcaption>Oprávnění a podmínka spuštění v ukázkových workflow z repozitáře run-gemini-cli (snímek terminálu, zdroj souborů: [16])</figcaption>
 </figure>
 
-<h3>Krok 4: Zadejte úkol a schvalte plán</h3>
+<h3>Zadání úkolu a schválení plánu</h3>
 <ol>
   <li>V issue nebo pull requestu napište komentář, např. <code>@gemini-cli Refaktoruj funkci calculateTotal v src/utils.js</code> [16].</li>
-  <li>Agent potvrdí přijetí. U změn kódu nejdřív <b>zveřejní plán</b> jako komentář [16].</li>
-  <li>Plán zkontrolujte a schvalte odpovědí <code>@gemini-cli /approve &lt;odkaz-nebo-ID-komentáře-s-plánem&gt;</code>. Samotné <code>/approve</code> bez odkazu se odmítne [16].</li>
-  <li>Agent vytvoří <b>novou větev</b>, commitne změny, otevře <b>pull request</b> a napíše shrnutí. Pro <code>main</code> doporučuje dokumentace zapnout ochranu větve [16].</li>
+  <li>Agent potvrdí přijetí. Pokud jde o změnu kódu, nejdřív zveřejní plán jako komentář.</li>
+  <li>Plán schválíte odpovědí <code>@gemini-cli /approve &lt;odkaz nebo ID komentáře s plánem&gt;</code>. Samotné <code>/approve</code> bez odkazu se odmítne [16].</li>
+  <li>Agent vytvoří větev, commitne změny, otevře pull request a napíše shrnutí [16].</li>
 </ol>
 </section>
 
-<!-- ============================ SROVNÁNÍ ============================ -->
-<section class="plynule">
-<h2>6&nbsp;&nbsp;Srovnání všech tří agentů</h2>
-<table class="tab srovnani"><colgroup><col style="width:16%"><col style="width:28%"><col style="width:28%"><col style="width:28%"></colgroup>
-  <thead><tr><th></th><th>Claude Code v cloudu</th><th>GitHub Copilot cloud agent</th><th>Gemini CLI GitHub Action</th></tr></thead>
+<!-- ===== SROVNÁNÍ ===== -->
+<section>
+<h2>Srovnání agentů</h2>
+<table class="tab">
+  <colgroup><col style="width:19%"><col style="width:27%"><col style="width:27%"><col style="width:27%"></colgroup>
+  <thead><tr><th></th><th>Claude Code</th><th>GitHub Copilot</th><th>Gemini CLI</th></tr></thead>
   <tbody>
-    <tr><td><b>Výrobce</b></td><td>Anthropic</td><td>GitHub (Microsoft)</td><td>Google</td></tr>
-    <tr><td><b>Kde agent běží</b></td><td>VM u Anthropicu (nebo self-hosted) [1]</td><td>Cloudový sandbox GitHubu [4]</td><td>Runner GitHub Actions vašeho repozitáře [14]</td></tr>
-    <tr><td><b>Jak získá přístup</b></td><td>Claude GitHub App nebo token <code>gh</code> přes <code>/web-setup</code> [2]</td><td>Povolení v Settings › Copilot › Cloud agent [5]</td><td><code>GITHUB_TOKEN</code> nebo vlastní GitHub App [15]</td></tr>
-    <tr><td><b>Omezení na 1 repozitář</b></td><td>Instalace aplikace s <i>Only select repositories</i>; proxy obsluhuje jen repozitáře připojené k relaci [3]</td><td><i>Repository access › Only selected repositories</i> [5]</td><td>Workflow je přímo v repozitáři; aplikace s <i>Only select repositories</i> [15]</td></tr>
-    <tr><td><b>Kam zapisuje</b></td><td>Vlastní větev (např. <code>claude/…</code>), PR na vyžádání [1]</td><td>Jen větev <code>copilot/…</code> nebo větev PR [6]</td><td>Nová větev + PR po schválení plánu [16]</td></tr>
-    <tr><td><b>Jak zadat úkol</b></td><td>Prompt na claude.ai/code, v aplikaci nebo <code>claude --cloud</code> [2]</td><td>Přiřazení issue, karta Agents, <code>@copilot</code> [4]</td><td>Komentář <code>@gemini-cli …</code> [16]</td></tr>
-    <tr><td><b>Co je potřeba zaplatit</b></td><td>Plán Claude Pro/Max/Ultra/Team/Enterprise [1]</td><td>Placený plán Copilot [5]</td><td>API klíč Gemini (AI Studio) + minuty Actions [14]</td></tr>
-    <tr><td><b>Odebrání přístupu</b></td><td>claude.ai/customize/connectors; odinstalace aplikace [1]</td><td>Repository access › No repositories [5]</td><td>Smazat workflow/secrets, odinstalovat aplikaci [12]</td></tr>
+    <tr><td>Výrobce</td><td>Anthropic</td><td>GitHub (Microsoft)</td><td>Google</td></tr>
+    <tr><td>Kde agent běží</td><td>virtuální stroj u Anthropicu [1]</td><td>cloudové prostředí GitHubu [4]</td><td>GitHub Actions v repozitáři [14]</td></tr>
+    <tr><td>Získání přístupu</td><td>Claude GitHub App nebo token <code>gh</code> (<code>/web-setup</code>) [2]</td><td>povolení v Copilot settings &gt; Cloud agent [5]</td><td><code>GITHUB_TOKEN</code> nebo vlastní GitHub App [15]</td></tr>
+    <tr><td>Omezení na repozitář</td><td>instalace aplikace jen na vybraný repozitář [1], [9]</td><td><i>Only selected repositories</i> [5]</td><td>workflow je v repozitáři, aplikace jen na vybraný repozitář [15]</td></tr>
+    <tr><td>Kam zapisuje</td><td>vlastní větev, pull request na vyžádání [1]</td><td>jen větev <code>copilot/…</code> nebo větev PR [6]</td><td>nová větev a pull request po schválení plánu [16]</td></tr>
+    <tr><td>Zadání úkolu</td><td>claude.ai/code, mobilní aplikace, <code>claude --cloud</code> [2]</td><td>přiřazení issue, karta Agents, <code>@copilot</code> [4]</td><td>komentář <code>@gemini-cli</code> [16]</td></tr>
+    <tr><td>Placení</td><td>plán Claude Pro a vyšší [1]</td><td>placený plán Copilot [5]</td><td>API klíč Gemini, minuty Actions [14]</td></tr>
+    <tr><td>Odebrání přístupu</td><td>odpojení konektoru, odinstalace aplikace [1], [12]</td><td>Repository access: No repositories [5]</td><td>smazání workflow a secrets, odinstalace aplikace [12]</td></tr>
   </tbody>
 </table>
 </section>
 
-<section>
-<h2>7&nbsp;&nbsp;Bezpečnostní kontrolní seznam</h2>
-<ul class="check">
-  <li>Agent má přístup <b>jen k repozitáři</b>, ve kterém má pracovat (<i>Only select repositories</i>).</li>
-  <li>Oprávnění jsou minimální (např. bez <i>Administration</i>, bez přístupu ke všem repozitářím).</li>
-  <li>Hlavní větev je chráněná (povinná revize pull requestu, povinné testy).</li>
-  <li>Změny od agenta vždy procházejí <b>pull requestem a lidskou revizí</b>.</li>
-  <li>API klíče a privátní klíče jsou jen v <b>Secrets</b>, nikdy v kódu ani v komentářích.</li>
-  <li>Workflow spouštěná agentem (CI) schvalujete vědomě (Copilot: <i>Approve and run workflows</i>).</li>
-  <li>Víte, jak přístup zrušit (Settings › Applications na GitHubu, konektory na claude.ai, politika Copilota).</li>
+<section class="dal">
+<h2>Bezpečnost</h2>
+<p>Před tím, než agent začne v repozitáři pracovat, je vhodné zkontrolovat:</p>
+<ul>
+  <li>agent má přístup jen k repozitáři, ve kterém má pracovat,</li>
+  <li>oprávnění jsou jen ta nutná (bez administrace, bez přístupu ke všem repozitářům),</li>
+  <li>hlavní větev je chráněná (povinná kontrola pull requestu, povinné testy),</li>
+  <li>změny od agenta procházejí pull requestem a kontrolou člověkem,</li>
+  <li>API klíče a privátní klíče jsou uložené jen v Secrets, ne v kódu ani v komentářích,</li>
+  <li>spouštění workflow na změny od agenta se schvaluje ručně,</li>
+  <li>je jasné, jak přístup zrušit.</li>
 </ul>
-<p class="zaver">Podrobný seznam zdrojů s přesnými odkazy, datem přístupu a citovanými pasážemi najdete v souboru <b>Zdroje.pdf</b>.</p>
 </section>
 
 </body>
